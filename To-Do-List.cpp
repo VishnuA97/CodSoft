@@ -38,7 +38,20 @@ void add_task(){
 
 }
 
-void view_task(){}
+void view_task(){
+    ifstream read;
+    read.open("test.txt", ios::in | ios::binary);
+    if(!read){
+        cout << "File Not Found\n";
+    }
+    else{
+        while(!read.eof()) {
+            getline(read, task);
+            cout<<task<<"\n";
+        }
+    }
+    read.close();
+}
 
 void complete_task(){}
 
