@@ -6,6 +6,8 @@ using namespace std;
 
 string task;
 
+ifstream read;
+ofstream file;
 
 int menu(){
     system("cls");
@@ -37,13 +39,13 @@ void back(){
 
 void add(){
     system("cls");
-    ofstream file;
+    
     char ch;
     cout << "Enter Task:";
     getline(cin>>ws,task);
     cin.get();
    
-    file.open("Task.txt", ios::app | ios::binary); 
+    file.open("task.txt", ios::app | ios::binary); 
     file << task<<"\n";
     file.close();
     
@@ -56,30 +58,75 @@ void add(){
     else if(ch=='n' || ch=='N'){
         back();
     }
+    else{
+        cout<<"Invalid command!!!\n";
+        back();
+    }
 }
     
 void view_task(){
+    int count=0;
     system("cls");
-    ifstream read;
-    read.open("Task.txt", ios::in | ios::binary);
+    read.open("task.txt", ios::in | ios::binary);
     if(!read){
         cout << "File Not Found\n";
     }
     else{
-        while(!read.eof()) {
+        while(read.peek()!=EOF) {
             getline(read, task);
-            cout<<task<<"\n";
+            count++;
+            cout<<count<<". "<<task<<"\n";
         }
     }
     read.close();
+}
+void complete(){
+    int count=0;
+    int num,i;
+    view_task();
+    cout<<"Enter the Task Number to mark as complete:\n";
+    cin>>num;
+    file.open("temp.txt", ios::app | ios::binary);
+    read.open("task.txt", ios::in | ios::binary);
+    while(read.peek()!=EOF) {
+        getline(read, task);
+        count++;
+        if(count!=num){
+            file<<task<<"\n";
+        }
+        else if(count==num){
+            file<<task<<"------------------------(Complete)\n";
+        }
+    }    
+    file.close();
+    read.close();
+    remove("task.txt");
+    rename("temp.txt", "task.txt");
     back();
 
 }
 
 void delete_task(){
-    
+    int count=0;
+    int num,i;
+    view_task();
+    cout<<"Enter the Task Number to delete that task:\n";
+    cin>>num;
+    file.open("temp.txt", ios::app | ios::binary);
+    read.open("task.txt", ios::in | ios::binary);
+    while(read.peek()!=EOF) {
+        getline(read, task);
+        count++;
+        if(count!=num){
+            file<<task<<"\n";
+        }
+    }    
+    file.close();
+    read.close();
+    remove("task.txt");
+    rename("temp.txt", "task.txt");
+    back();
 }
-
 
 int main(){
     while(true){
@@ -90,6 +137,13 @@ int main(){
                 break;
             case 2:
                 view_task();
+                back();
+                break;
+            case 3:
+                complete();
+                break;
+            case 4:
+                delete_task();
                 break;
             case 5:
                 exit(0);
