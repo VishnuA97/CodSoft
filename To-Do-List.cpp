@@ -1,46 +1,67 @@
 #include<iostream>
 #include<fstream>
 #include<string>
+#include<conio.h>
 using namespace std;
 
-
-fstream file;
 string task;
-char menu, ch;
 
-void main_menu(){
+
+int menu(){
+    system("cls");
+    int choice;
     cout<<"\t\t\t\t\t\tTo-Do List\n\n\n";
     cout<<"1.  Add a new task\n";
     cout<<"2.  View the list\n";
     cout<<"3.  Mark a task as completed\n";
-    cout<<"4.  Delete a task\n\n\n";
+    cout<<"4.  Delete a task\n";
+    cout<<"5.  Quit\n\n\n";
+    cout<<"Enter a choice:";
+    cin >> choice;
+    return(choice);
 }
 
-void add_task(){
-    system("cls");
-    cout << "Enter Task:";
-    getline(cin,task);
-    cin.get();
-    
-    file.open("task.txt", ios::app );
-    if(file.is_open()){
-        file << task<<"\n";
-        file.close();
-    }  
-    cout<<"Do you want to add another task?(y/n): \n";
-    cin >> ch;
-    if(ch == 'y'){
-        add_task();
+void back(){
+    char cho;
+    cout << "Press M to go to Main menu..." << endl;
+    cin>>cho;
+    if(cho == 'm' || cho == 'M'){
+       return;
     }
     else{
-        exit(0);
+        cout <<"Invalid command!!!\n";
+        back();
     }
-
 }
 
+
+void add(){
+    system("cls");
+    ofstream file;
+    char ch;
+    cout << "Enter Task:";
+    getline(cin>>ws,task);
+    cin.get();
+   
+    file.open("Task.txt", ios::app | ios::binary); 
+    file << task<<"\n";
+    file.close();
+    
+    cout<<"Do you want to add more task? y/n"<<endl;
+    cin>> ch;
+
+    if(ch == 'y' || ch == 'Y'){
+        add();
+    }
+    else if(ch=='n' || ch=='N'){
+        back();
+    }
+}
+    
 void view_task(){
+    system("cls");
     ifstream read;
-    read.open("test.txt", ios::in | ios::binary);
+    read.open("Task.txt", ios::in | ios::binary);
     if(!read){
         cout << "File Not Found\n";
     }
@@ -51,35 +72,34 @@ void view_task(){
         }
     }
     read.close();
+    back();
+
 }
 
-void complete_task(){}
+void delete_task(){
+    
+}
 
-void delete_task(){}
-
-
-
-void to_do_list(){
-    int choice;
-   
-    while(true){
-        main_menu();
-        cout<<"Enter a choice to continue\n";
-        cin>>choice;
-        switch(choice){
-            case 1: add_task(); break;
-            case 2: view_task(); break;
-            case 3: complete_task(); break;
-            case 4: delete_task(); break;
-            default: cout<<"Invalid choice!!! Enter a number between 1 and 4\n"; 
-            break;
-        }
-    }
-}    
 
 int main(){
     while(true){
-        add_task();
+        switch (menu()) 
+        {
+            case 1:
+                add();
+                break;
+            case 2:
+                view_task();
+                break;
+            case 5:
+                exit(0);
+                break;
+            default:
+                cout<<"Error!!! Wrong choice!";
+                back();
+                break;
+        }
     }
+   
     return 0;
 }
